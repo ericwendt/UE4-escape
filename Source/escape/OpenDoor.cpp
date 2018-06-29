@@ -26,32 +26,6 @@ void UOpenDoor::BeginPlay()
 	}
 }
 
-void UOpenDoor::OpenDoor()
-{
-	//Find owning actor
-	AActor* Owner = GetOwner();
-
-	//create rotator
-	FRotator NewRotation = FRotator(0.0f, 90.0f, 0.0f);
-
-	//set the door rotation
-	//Owner->SetActorRotation(NewRotation);
-	OnOpenRequest.Broadcast();
-}
-
-void UOpenDoor::CloseDoor()
-{
-	//Find owning actor
-	AActor* Owner = GetOwner();
-
-	//create rotator
-	FRotator NewRotation = FRotator(0.0f, 0.0f, 0.0f);
-
-	//set the door rotation
-	Owner->SetActorRotation(NewRotation);
-}
-
-
 
 // Called every frame
 void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -59,17 +33,15 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 
-	//if the actor that opens is in the volume 
-	if (GetTotalMassOfActorsOnPlate() > 30.f)	//TODO make into a parameter
+	//if total mass on plate reaches threshold, open door 
+	if (GetTotalMassOfActorsOnPlate() > TriggerMass)
 	{        
-		OpenDoor();
-		LastDoorOpenTime = GetWorld()->GetTimeSeconds();
+		OnOpen.Broadcast();
 	}
 	
-	//if door has been open for longer than delay, close door
-	if (GetWorld()->GetTimeSeconds() - LastDoorOpenTime >= DoorCloseDelay) 
+	else
 	{
-		CloseDoor();
+		OnClose.Broadcast();
 	}
 	
 }
