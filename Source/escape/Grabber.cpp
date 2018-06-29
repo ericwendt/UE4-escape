@@ -79,7 +79,7 @@ void UGrabber::Grab()
 	{
 		UE_LOG(LogTemp, Error, TEXT("you have hit an actor!"))
 		
-		if (!PhysicsHandle) { return; }
+	//	if (!PhysicsHandle) { return; }
 		PhysicsHandle->GrabComponent(   // attach physics handle
 			ComponentToGrab,     
 			NAME_None,    //no bones needed
@@ -93,7 +93,7 @@ void UGrabber::Release()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Grab key released"))
 
-	if (!PhysicsHandle) { return; }
+	//if (!PhysicsHandle) { return; }
 	PhysicsHandle->ReleaseComponent();
 }
 
@@ -102,7 +102,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
-	if (!PhysicsHandle) { return; }
+//	if (!PhysicsHandle) { return; }
 
 	//if physics handle is attached
 	if (PhysicsHandle->GrabbedComponent)
