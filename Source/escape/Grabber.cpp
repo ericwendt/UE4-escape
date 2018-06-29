@@ -33,11 +33,13 @@ void UGrabber::FindPhysicsHandleComponent()
 {
 	///look for attached physics handle
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
-	if (PhysicsHandle) {
+	if (PhysicsHandle)
+	{
 		//is physics handle is found
 		UE_LOG(LogTemp, Warning, TEXT("physics handle found"))
 	}
-	else {
+	else 
+	{
 		UE_LOG(LogTemp, Error, TEXT("%s missing physics handle component"), *GetOwner()->GetName())
 	}
 }
@@ -46,7 +48,8 @@ void UGrabber::SetupInputComponent()
 {
 	///look for attached input component (only appears at runtime)
 	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
-	if (InputComponent) {
+	if (InputComponent) 
+	{
 		//is input component is found
 		UE_LOG(LogTemp, Warning, TEXT("Input component found"))
 		
@@ -54,13 +57,15 @@ void UGrabber::SetupInputComponent()
 		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
 		InputComponent->BindAction("Grab", IE_Released, this, &UGrabber::Release);
 	}
-	else {
+	else 
+	{
 		UE_LOG(LogTemp, Error, TEXT("%s missing input component"), *GetOwner()->GetName())
 	}
 }
 
 
-void UGrabber::Grab() {
+void UGrabber::Grab() 
+{
 	//ray cast and grab what's in reach
 	UE_LOG(LogTemp, Warning, TEXT("Grab key pressed"))
 
@@ -74,6 +79,7 @@ void UGrabber::Grab() {
 	{
 		UE_LOG(LogTemp, Error, TEXT("you have hit an actor!"))
 		
+		if (!PhysicsHandle) { return; }
 		PhysicsHandle->GrabComponent(   // attach physics handle
 			ComponentToGrab,     
 			NAME_None,    //no bones needed
@@ -83,8 +89,11 @@ void UGrabber::Grab() {
 	}
 }
 
-void UGrabber::Release() {
+void UGrabber::Release()
+{
 	UE_LOG(LogTemp, Warning, TEXT("Grab key released"))
+
+	if (!PhysicsHandle) { return; }
 	PhysicsHandle->ReleaseComponent();
 }
 
@@ -93,6 +102,9 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
+	if (!PhysicsHandle) { return; }
+
+	//if physics handle is attached
 	if (PhysicsHandle->GrabbedComponent)
 	{
 		//move the object that we're holding
@@ -119,7 +131,8 @@ const FHitResult UGrabber::GetFirstPhysicsBodyInReach()
 
 	///See what we hit
 	AActor* ActorHit = HitResult.GetActor();
-	if (ActorHit) {
+	if (ActorHit)
+	{
 		UE_LOG(LogTemp, Warning, TEXT("Line trace hit: %s"), *(ActorHit->GetName()))
 	}
 	
